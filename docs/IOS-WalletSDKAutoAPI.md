@@ -740,9 +740,6 @@
 ```
 
 #### 返回格式
-结果
-- txHash：交易hash
-
 返回示例
 ```json
 {
@@ -1259,3 +1256,427 @@
 
 ```
 
+
+
+# 新增云钱包接口
+
+### sdk_setCloudMerchantId
+
+初始化设置
+
+#### 请求格式
+
+参数
+
+| name           | type   | required | description  |
+| :------------- | :----- | :------- | :----------- |
+| merchantId     | string | yes      | 商户ID       |
+| remoteDHPubKey | string | yes      | 商户对应公钥 |
+
+请求示例
+
+```json
+{
+	"method": "sdk_setCloudMerchantId",
+	"params": {
+		"merchantId": "4fdc8f51ac084d3b9c2a749a0280a081",
+        "remoteDHPubKey":"cf06693d7061dcd2d03cb27d4effbdbd6d5257a74574e456447f47b5e4024126"
+	}
+}
+```
+
+返回示例
+
+```json
+{
+    "code":0,
+    "msg":"ok",
+	"result": {}
+}
+```
+
+### sdk_getCloudCode
+
+获取验证码
+
+#### 请求格式
+
+参数
+
+| name    | type   | required | description                              |
+| :------ | :----- | :------- | :--------------------------------------- |
+| account | string | yes      | 手机号(+86139****)或邮箱（12345@qq.com） |
+
+请求示例
+
+```json
+{
+    "method": "sdk_getCloudCode",
+    "params": {
+        "account":"+86139***"
+    }
+}
+```
+
+#### 返回格式
+
+返回示例
+
+```json
+{
+    "code":0,
+    "msg":"ok",
+	"result": {}
+
+```
+
+### sdk_bindAccount
+
+绑定账号
+
+#### 请求格式
+
+参数
+
+| name    | type   | required | description                              |
+| :------ | :----- | :------- | :--------------------------------------- |
+| account | string | yes      | 手机号(+86139****)或邮箱（12345@qq.com） |
+| code    | string | yes      | 验证码                                   |
+
+请求示例
+
+```json
+{
+    "method": "sdk_bindAccount",
+    "params": {
+        "account":"+86138...",
+        "code":"123123"
+    }
+}
+```
+
+#### 返回格式
+
+返回示例
+
+```json
+{
+    "code":0,
+    "msg":"ok",
+	"result": {}
+
+```
+
+### sdk_createCloudWallet
+
+创建云钱包地址
+
+#### 请求格式
+
+参数
+
+| name      | type   | required | description             |
+| :-------- | :----- | :------- | :---------------------- |
+| chainType | string | yes      | 主链（目前只支持BCB链） |
+
+请求示例
+
+```json
+{
+    "method": "sdk_createCloudWallet",
+    "params": {
+        "chainType":"BCB"
+    }
+}
+```
+
+#### 返回格式
+
+返回示例
+
+```json
+{
+    "code":0,
+    "msg":"ok",
+    "result": {
+        "address":"bcbAaKWWE3botCiuXMj58d8TPX56dvUk3wj1"
+    }
+
+```
+
+### sdk_getCloudWalletList
+
+获取云钱包地址列表
+
+#### 请求格式
+
+参数
+
+| name      | type   | required | description             |
+| :-------- | :----- | :------- | :---------------------- |
+| chainType | string | yes      | 主链（目前只支持BCB链） |
+
+请求示例
+
+```json
+{
+    "method": "sdk_getCloudWalletList",
+    "params": {
+        "chainType":"BCB"
+    }
+}
+```
+
+#### 返回格式
+
+返回示例
+
+```json
+{
+    "code":0,
+    "msg":"ok",
+    "result": [
+        "bcbAaKWWE3botCiuXMj58d8TPX56dvUk3wj1",
+        "bcbAaKWWE3botCiuXMj58d8TPX56dvUk3wj1"
+    ]
+
+```
+
+### sdk_cloudWalletTransation
+
+云钱包支付
+
+#### 请求格式
+
+参数
+
+| name       | type   | required | description                                                  |
+| :--------- | :----- | :------- | :----------------------------------------------------------- |
+| walletAddr | string | yes      | 钱包地址                                                     |
+| chainType  | string | yes      | 主链（目前只支持BCB链）                                      |
+| walletCall | string | yes      | json串，此字段根据不同的合约定义有不同的数据格式；具体请参见《BCB钱包通用支付接入规范》总描述 |
+
+请求示例
+
+```json
+{
+    "method": "sdk_cloudWalletTransation",
+    "params": {
+        "walletAddr":"bcbAaKWWE3botCiuXMj58d8TPX56dvUk3wj1",
+        "chainType":"BCB",
+        "walletCall":"{\"note\":\"request-banker\",\"gasLimit\":\"3500000\",\"calls\":[{\"contract\":\"bcbCsRXXMGkUJ8wRnrBUD7mQsMST4d53JRKJ\",\"method\":\"Transfer(types.Address,bn.Number)\",\"params\":[\"bcbJkX5Hcfdewinsc2DkGA5LPNRQix93iwDH\",\"10\"]}]}"
+    }
+}
+```
+
+#### 返回格式
+
+返回示例
+
+```json
+{
+    "code":0,
+    "msg":"ok",
+    "result": {
+        "txHash":"0x0F8642968E48A16316CD499BF142E15EEFF03BE44816796AF87DDC2F1B72BBA4"
+    }
+
+```
+
+### sdk_getCloudAddrsBalance
+
+获取云钱包地址余额
+
+#### 请求格式
+
+参数
+
+| 字段名      | 类型   | 必须 | 说明                                           |
+| ----------- | ------ | ---- | ---------------------------------------------- |
+| walletAddr  | string | 是   | 钱包地址                                       |
+| legalSymbol | string | 是   | 资产的法币计价单位，人民币为：CNY；美元为：USD |
+
+#### 请求示例
+
+```json
+{
+	"method": "sdk_getCloudAddrsBalance",
+	"params": {
+		"walletAddr": "bcbLTwDzzZn3Jy8cJGvygWLgpTr9hEdVpWZ9",
+		"legalSymbol": "CNY"
+	}
+}
+```
+
+#### 返回格式
+
+返回示例
+
+```json
+{
+    "code":0,
+	"msg": "ok",
+	"result":[
+        {
+            "addr":"bcbtestCTLvcA7pa1RqCncL2fRcALgRrVYudJNeE",
+            "coinType":"0x1001",
+            "conAddr":"bcbtestAtEJ4dTejwJReKA4dtFjy9cQ3HzR6jbwF",
+            "name":"BCBT",
+            "symbol":"BCBT",
+            "balance":"101",
+            "last":"2019-04-01T14:21:00.8342387+08:00",
+            "decimals":"9",
+            "coinIcon":"https://testapi.n8.app/public/resource/coin/icon/BCBMainNet.png",
+            "legalValue":"688.8604",
+            "isToken":false,
+            "idx":0,
+            "feeInfo":null
+        },
+        {
+            "addr":"bcbtestCTLvcA7pa1RqCncL2fRcALgRrVYudJNeE",
+            "coinType":"0x1001",
+            "conAddr":"bcbtestDhxdEq9JPFhQ8xicUdSAHQHxymP2orXYW",
+            "name":"B99",
+            "symbol":"B99",
+            "balance":"0",
+            "last":"2019-04-01T14:21:00.8344529+08:00",
+            "decimals":"9",
+            "coinIcon":"https://testapi.n8.app/public/resource/coin/icon/B99.png",
+            "legalValue":"0",
+            "isToken":true,
+            "idx":1,
+            "feeInfo":null
+        }
+     ]
+}
+```
+
+### sdk_getCloudCoinDeatil
+
+获取云钱包指定地址、指定币种信息
+
+#### 请求格式
+
+参数
+
+| 字段名      | 类型   | 必须 | 说明                                               |
+| ----------- | ------ | ---- | -------------------------------------------------- |
+| walletAddr  | string | 是   | 钱包地址                                           |
+| conAddr     | string | 是   | 币种合约地址                                       |
+| legalSymbol | string | 是   | 币种资产的法币计价单位，人民币为：CNY；美元为：USD |
+
+请求示例
+
+```json
+{
+	"method": "sdk_getCloudCoinDeatil",
+	"params": {
+		"walletAddr": "bcbLTwDzzZn3Jy8cJGvygWLgpTr9hEdVpWZ9",
+        "conAddr":"bcbLVgb3odTfKC9Y9GeFnNWL9wmR4pwWiqwe",
+        "legalSymbol":"CNY"
+	}
+}
+```
+
+#### 返回格式
+
+返回示例
+
+```json
+{
+    "code":0,
+	"msg": "ok",
+	"result":{
+        "addr":"bcbESMNFs8Cekc9H6xQcu3a2p4NvJDtNoy8S",
+        "coinType":"0x1002",
+        "conAddr":"bcbLVgb3odTfKC9Y9GeFnNWL9wmR4pwWiqwe",
+        "name":"BCB",
+        "symbol":"BCB",
+        "balance":"4.99905",
+        "last":"2019-04-01T14:44:20.4735693+08:00",
+        "decimals":"9",
+        "coinIcon":"https://www.n8.app/public/resource/coin/icon/BCBMainNet.png",
+        "legalValue":"215.21092615344",
+        "isToken":false,
+        "idx":65535,
+        "feeInfo":{
+            "id":1,
+            "isUniteCoin":false,
+            "conAddr":"bcbLVgb3odTfKC9Y9GeFnNWL9wmR4pwWiqwe",
+            "percent":0,
+            "maxfee":null,
+            "minfee":null,
+            "feeName":null,
+            "bcbFee":"0.00125",
+            "modifyTime":"2018-11-01T08:56:40"
+        }
+    }
+}
+```
+
+### sdk_getCloudCoinTransactionDetail
+
+获取云钱包地址交易记录
+
+#### 请求格式
+
+参数
+
+| 字段名     | 类型   | 必须 | 说明         |
+| ---------- | ------ | ---- | ------------ |
+| walletAddr | string | 是   | 钱包地址     |
+| conAddr    | string | 是   | 币种合约地址 |
+| page       | int    | 是   | 页码从0开始  |
+| count      | int    | 是   | 条数         |
+
+请求示例
+
+```json
+{
+	"method": "sdk_getCloudCoinTransactionDetail",
+	"params": {
+		"walletAddr": "bcbLTwDzzZn3Jy8cJGvygWLgpTr9hEdVpWZ9",
+        "conAddr":"bcbLVgb3odTfKC9Y9GeFnNWL9wmR4pwWiqwe",
+        "page":0,
+        "count":20
+	}
+}
+```
+
+#### 返回格式
+
+返回示例
+
+```json
+{
+    "code":0,
+	"msg": "ok",
+	"result":{
+        "records":[
+            {
+                "id":12858549,
+                "coinType":"0x1002",
+                "from":"bcb2kerqmq8ZRPneB4mp2Qv4qSwDyhtLYwb8",
+                "to":"bcbESMNFs8Cekc9H6xQcu3a2p4NvJDtNoy8S",
+                "conAddr":"bcbCsRXXMGkUJ8wRnrBUD7mQsMST4d53JRKJ",
+                "value":"175.756694",
+                "valueName":"DC",
+                "fee":"0.0015",
+                "feeName":"BCB",
+                "timeStamp":"1553238936",
+                "blockN":"9603760",
+                "source":null,
+                "txHash":"D67097C9E342213B7F46C8D680C96099907A81096E975847D7C204CDA76CAD70",
+                "memo":"BalancePo CoinTransfer:1553238925228RK7EwEBSC1KO",
+                "status":"0x1",
+                "balanceFromFlag":0,
+                "balanceToFlag":0,
+                "pushFromCnt":0,
+                "modifyTime":"2019-03-22T15:15:37"
+            }
+        ]
+    } 
+}
+```
+
+### 
